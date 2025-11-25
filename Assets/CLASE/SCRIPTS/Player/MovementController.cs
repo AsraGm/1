@@ -9,18 +9,18 @@ public class MovementController : NetworkBehaviour
     private Rigidbody rbPlayer;
 
     [SerializeField] private Animator _animator;
-    private KCC KCC;
+    private KCC kcc;
     private void Awake()
     {
         rbPlayer = GetComponent<Rigidbody>();
-        KCC = GetComponent<KCC>();
+        kcc = GetComponent<KCC>();
     }
 
-    public override void FixedUpdateNetwork() // Esto me sincroniza con el servidor
+    public override void FixedUpdateNetwork() 
     {
         if (Object.HasStateAuthority)
         {
-            if (GetInput(out NetworkInputData input)) // Aqui, yo debo cersiorarme de estar recibiendo el input del servidor. Me consigue el input que me manda el servidor
+            if (GetInput(out NetworkInputData input)) 
             {
                 Movement(input);
                 UpdateAnimator(input);
@@ -44,11 +44,11 @@ public class MovementController : NetworkBehaviour
 
     private void Movement(NetworkInputData input)
     {
-        Quaternion realRotation = Quaternion.Euler(0, input.yRotation, 0); // Creamos angulos, solo definiendo Y, que es el que nos interesa
+        Quaternion realRotation = Quaternion.Euler(0, input.yRotation, 0); 
         Vector3 worldDirection = realRotation * (new Vector3(input.move.x, 0, input.move.y));
  
         //rbPlayer.linearVelocity = worldDirection.normalized * (Runner.DeltaTime * Speed(input));
-        KCC.SetKinematicVelocity(worldDirection.normalized * (Runner.DeltaTime * Speed(input)));
+        kcc.SetKinematicVelocity(worldDirection.normalized * (Runner.DeltaTime * Speed(input)));
     }
 
     private float Speed(NetworkInputData input)
