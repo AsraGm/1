@@ -14,6 +14,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner runner; // Runner es quien se encarga de enviar y recibir informacion, es tu medio de comunicacion con el servidor
     [SerializeField] NetworkSceneManagerDefault sceneManager;
     [SerializeField] private Transform[] spawnPoint;
+    [SerializeField] private GameObject panelMenu;
 
     [SerializeField] Dictionary<PlayerRef,NetworkObject> players = new Dictionary<PlayerRef, NetworkObject>(); // PlayerRef es el ID de nuestro jugador en la red, NetwokrObject es el prefab/objeto de nuestro jugador
 
@@ -32,37 +33,41 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     /// </summary>
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer) // Unicamente la persona que tiene el host va a mandar a llamar este metodo. Esto es para que no haya instancias de mas
+        if (runner.IsServer)
         {
-            int randomSpawn = UnityEngine.Random.Range(0, spawnPoint.Length); // Consigo un spawn random de mi arreglo
-            NetworkObject networkPlayer = runner.Spawn(prefab, spawnPoint[randomSpawn].position, spawnPoint[randomSpawn].rotation,player);
-            players.Add(player, networkPlayer); // Agregamos al diccionario el id de el jugador y lo vinculamos con su prefab que acaba de instanciarse
+            int randomSpawn = UnityEngine.Random.Range(0, spawnPoint.Length);
+            NetworkObject networkPlayer = runner.Spawn(prefab, spawnPoint[randomSpawn].position, spawnPoint[randomSpawn].rotation, player);
+            players.Add(player, networkPlayer);
+
+            var gameManager = FindFirstObjectByType<GameManager>();
+            if (gameManager != null)
+                gameManager.RegistrarNuevoJugador(player);
         }
-        onPlayerJoinedToGame.Invoke(); // Invoca mi evento // Esto se pone afuera de el if para que a todo jugador que entre se le apague el canvas
+                
+        panelMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (players.TryGetValue(player, out NetworkObject networkPlayer)) // Si en mi diccionario existe a referencia a ese jugador, 
+        if (players.TryGetValue(player, out NetworkObject networkPlayer))
         {
-
-            runner.Despawn(networkPlayer); // Elimino el objeto de el jugador de la escena
-            players.Remove(player); // Lo elimino de mi diccionario
+            runner.Despawn(networkPlayer);
+            players.Remove(player);
         }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        // Creo un objeto de tipo NetworkInputData
         NetworkInputData data = new NetworkInputData()
         {
-            move = InputManager.Instance.GetMoveInput() == null ? new Vector2(0,0) : InputManager.Instance.GetMoveInput(),
+            move = InputManager.Instance.GetMoveInput(),
             look = InputManager.Instance.GetMouseDelta(),
             isRunning = InputManager.Instance.WasRunInputPressed(),
             yRotation = Camera.main.transform.eulerAngles.y,
             shoot = InputManager.Instance.ShootInputPressed()
         };
-
         input.Set(data);
     }
 
@@ -150,23 +155,15 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     private async void StartGame(GameMode mode)
     {
         runner.AddCallbacks(this);
-        runner.ProvideInput = true; // Esto nos dice que el runner recibira y mandara inputs
+        runner.ProvideInput = true;
 
-        var scene = SceneRef.FromIndex(0); // Guardame una referencia a la escena 0.
-
-        var sceneInfo = new NetworkSceneInfo(); // Creo una variable que me va a guardar las escenas que voy a usar, 
-
-        if (scene.IsValid)
-        {
-            sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
-        }
+        var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
 
         await runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
-            SessionName = "#0001", // Este nombre es el interno que yo como desarrollador necesito entender
+            SessionName = "Partida_001",
             Scene = scene,
-            CustomLobbyName = "Official EA Europe", // Este es el que quiero mostrar
             SceneManager = sceneManager
         });
     }

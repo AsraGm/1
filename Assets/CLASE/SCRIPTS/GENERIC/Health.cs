@@ -1,40 +1,48 @@
 using Fusion;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Health : NetworkBehaviour
 {
-  
+    [SerializeField] private int maxHealth = 100;
+    [Networked] public int CurrentHealth { get; set; }
 
-    [SerializeField] private int health; // Tendremos una variable local de vida
-    [Networked] public int _health { get; set; }
+    private ScoreManager scoreManager;
 
-    public override void Spawned() // Cuando haces spawn, la vida se configura
+    public override void Spawned()
     {
-        _health = health;
+        CurrentHealth = maxHealth;
+        scoreManager = FindFirstObjectByType<ScoreManager>();
     }
 
-    /// <summary>
-    /// Cualquiera puede recibir daño, pero solo el Host lo ejecuta
-    /// porque si en el target pongo All, entonces el objetivo recibira daño
-    /// de todos lados
-    /// </summary>
-    [Rpc(RpcSources.All,RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void Rpc_TakeDamage(int damage, PlayerRef shooter)
     {
-        _health -= damage;
-        Debug.Log($"{name} recibio daño de {shooter}. Vida actual: {_health}");
+        CurrentHealth -= damage;
+        Debug.Log($"{name} recibio daño de {shooter}. Vida actual: {CurrentHealth}");
 
-        if (_health <= 0) 
-        { 
-            OnDeath();
+        if (CurrentHealth <= 0)
+        {
+            CurrentHealth = 0;
+            OnDeath(shooter);
+        }
+    }
+
+    private void OnDeath(PlayerRef asesino)
+    {
+        if (gameObject.CompareTag("Enemigo"))
+        {
+            if (scoreManager == null)
+                scoreManager = FindFirstObjectByType<ScoreManager>();
+
+            if (scoreManager != null && asesino != PlayerRef.None)
+            {
+                scoreManager.Rpc_AgregarPuntaje(asesino);
+            }
         }
 
+        if (Object != null && Object.HasStateAuthority)
+        {
+            Runner.Despawn(Object);
+        }
     }
-
-    private void OnDeath()
-    {
-
-    }
-
 }

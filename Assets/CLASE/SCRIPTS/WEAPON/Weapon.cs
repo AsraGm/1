@@ -13,6 +13,8 @@ public abstract class Weapon : NetworkBehaviour
     [SerializeField] protected float range;
     [SerializeField] protected int actualAmmo;
 
+    public ShootType Type => type;
+
     public abstract void RigidBodyShoot();
     public abstract void RpcRaycastShoot(RpcInfo info = default);
 }

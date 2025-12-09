@@ -3,16 +3,25 @@ using UnityEngine;
 
 public class WeaponHandler : NetworkBehaviour
 {
-    [SerializeField] Weapon actualWeapon;
-
+    [SerializeField] private Weapon actualWeapon;
 
     public override void FixedUpdateNetwork()
     {
+        if (!HasInputAuthority) return;
+
         if (GetInput(out NetworkInputData input))
         {
             if (input.shoot)
             {
-                actualWeapon.RpcRaycastShoot();
+                switch (actualWeapon.Type)
+                {
+                    case ShootType.RigidBody:
+                        actualWeapon.RigidBodyShoot();
+                        break;
+                    case ShootType.Raycast:
+                        actualWeapon.RpcRaycastShoot();
+                        break;
+                }
             }
         }
     }

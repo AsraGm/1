@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Projetile : NetworkBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private int damage;
-    [SerializeField] private int lifeTime;
-    private PlayerRef shooter;
+    [SerializeField] private float speed = 50f;
+    [SerializeField] private float lifeTime = 2f;
+
+    [Networked] public int Damage { get; set; }
+    [Networked] public PlayerRef Shooter { get; set; }
 
     private Rigidbody rb;
 
@@ -15,36 +16,38 @@ public class Projetile : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        rb.linearVelocity = transform.forward * speed;
+        if (Object.HasStateAuthority)
+        {
+            rb.linearVelocity = transform.forward * speed;
+        }
 
         DespawnAfterTime();
     }
 
     private async void DespawnAfterTime()
     {
-        await Task.Delay(lifeTime * 1000);
-        if (Object != null)
+        await Task.Delay((int)(lifeTime * 1000));
+
+        if (Object != null && Object.HasStateAuthority)
             Runner.Despawn(Object);
     }
 
     public void SetProjetile(PlayerRef shooter, int damage)
     {
-        this.shooter = shooter;
-        this.damage = damage;
+        Shooter = shooter;
+        Damage = damage;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!Object.HasStateAuthority) return;
+
         if (collision.collider.TryGetComponent(out Health health))
         {
-            health.Rpc_TakeDamage(damage, shooter);
+            health.Rpc_TakeDamage(Damage, Shooter);
         }
-        else
-        {
-            // Hacer aparecer un agujero de bala
-            Debug.Log("No tiene componente de vida");
-        }
-        Runner.Despawn(Object);
-    }
 
+        if (Object != null)
+            Runner.Despawn(Object);
+    }
 }
