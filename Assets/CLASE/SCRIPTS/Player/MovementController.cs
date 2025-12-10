@@ -41,8 +41,7 @@ public class MovementController : NetworkBehaviour
     private void Movement(NetworkInputData input)
     {
         if (kcc == null) return;
-
-        // Obtener rotación desde CameraController
+               
         float rotacionY = cameraController != null ? cameraController.ObtenerRotacionY() : transform.eulerAngles.y;
 
         Quaternion rotacion = Quaternion.Euler(0f, rotacionY, 0f);

@@ -12,7 +12,6 @@ public class Handgun : Weapon
 
             if (hit.collider.TryGetComponent(out Health health))
             {
-                // Usar Object.InputAuthority en lugar de info.Source
                 PlayerRef shooter = Object.InputAuthority;
                 Debug.Log($"[HANDGUN] Raycast - Shooter: {shooter.PlayerId}");
                 health.Rpc_TakeDamage(damage, shooter);
@@ -25,8 +24,7 @@ public class Handgun : Weapon
     }
 
     public override void RigidBodyShoot()
-    {
-        // Pasar el InputAuthority directamente
+    {        
         RpcPhysicShoot(shootPoint.position, shootPoint.rotation, Object.InputAuthority);
     }
 

@@ -42,7 +42,6 @@ public class Projetile : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Verificar que todo sea válido antes de continuar
         if (Object == null || !Object.IsValid) return;
         if (!Object.HasStateAuthority) return;
         if (yaColisiono) return;

@@ -22,8 +22,7 @@ public class CameraController : NetworkBehaviour
     private Vector2 camVelocity;
     private KCC kcc;
     private bool inicializado = false;
-
-    // Método público para que MovementController obtenga la rotación
+        
     public float ObtenerRotacionY()
     {
         if (HasInputAuthority)
@@ -51,8 +50,7 @@ public class CameraController : NetworkBehaviour
             float rotacionInicial = player != null ? player.eulerAngles.y : 0f;
             camVelocity.x = rotacionInicial;
             camVelocity.y = 0f;
-
-            // Sincronizar rotación inicial
+                        
             if (Object.HasStateAuthority)
             {
                 CamX = rotacionInicial;

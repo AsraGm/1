@@ -27,7 +27,6 @@ public class GameManager : NetworkBehaviour
 
     private void Awake()
     {
-        // Desactivar panel de resultado al iniciar
         if (panelResultado != null)
             panelResultado.SetActive(false);
     }
@@ -36,7 +35,6 @@ public class GameManager : NetworkBehaviour
     {
         scoreManager = FindFirstObjectByType<ScoreManager>();
 
-        // Doble verificación
         if (panelResultado != null)
             panelResultado.SetActive(false);
 
