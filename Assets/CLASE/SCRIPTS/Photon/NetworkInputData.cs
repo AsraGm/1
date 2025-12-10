@@ -10,14 +10,14 @@ using UnityEngine;
 /// </summary>
 public struct NetworkInputData : INetworkInput
 {
-
+    public NetworkButtons buttons;
     public Vector2 move;
     public Vector2 look;
-    public bool isRunning;
-
-    public float yRotation;
-
+    public bool isRunning;    
     public bool shoot;
 
+    public const byte BotonDisparo = 0;
+    public const byte BotonCorrer = 1;
+    public const byte BotonRecarga = 2;
 
 }

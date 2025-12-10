@@ -11,10 +11,12 @@ public class Projetile : NetworkBehaviour
     [Networked] public PlayerRef Shooter { get; set; }
 
     private Rigidbody rb;
+    private bool yaColisiono = false;
 
     public override void Spawned()
     {
         rb = GetComponent<Rigidbody>();
+        yaColisiono = false;
 
         if (Object.HasStateAuthority)
         {
@@ -40,14 +42,21 @@ public class Projetile : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Verificar que todo sea válido antes de continuar
+        if (Object == null || !Object.IsValid) return;
         if (!Object.HasStateAuthority) return;
+        if (yaColisiono) return;
+
+        yaColisiono = true;
 
         if (collision.collider.TryGetComponent(out Health health))
         {
             health.Rpc_TakeDamage(Damage, Shooter);
         }
 
-        if (Object != null)
+        if (Object != null && Object.IsValid)
+        {
             Runner.Despawn(Object);
+        }
     }
 }

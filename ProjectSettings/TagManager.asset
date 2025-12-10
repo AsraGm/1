@@ -5,7 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Bullet
-  - Enemy
+  - Enemigo
   layers:
   - Default
   - TransparentFX
@@ -16,7 +16,7 @@ TagManager:
   - Ground
   - Bullet
   - Trees
-  - 
+  - Player
   - 
   - 
   - 

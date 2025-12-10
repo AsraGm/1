@@ -39,11 +39,15 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
             NetworkObject networkPlayer = runner.Spawn(prefab, spawnPoint[randomSpawn].position, spawnPoint[randomSpawn].rotation, player);
             players.Add(player, networkPlayer);
 
+            // Registrar jugador - SOLO en el servidor
             var gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager != null)
+            {
                 gameManager.RegistrarNuevoJugador(player);
+                Debug.Log($"[PHOTON] Jugador {player.PlayerId} registrado en GameManager");
+            }
         }
-                
+
         panelMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -65,9 +69,9 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
             move = InputManager.Instance.GetMoveInput(),
             look = InputManager.Instance.GetMouseDelta(),
             isRunning = InputManager.Instance.WasRunInputPressed(),
-            yRotation = Camera.main.transform.eulerAngles.y,
             shoot = InputManager.Instance.ShootInputPressed()
-        };
+        };        
+
         input.Set(data);
     }
 

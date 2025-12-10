@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4554296865551643317}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shoot Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 503
+    m_Bits: 1015
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -284,11 +284,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 342909311b4900c42a2f950a16e59380, type: 2}
     - target: {fileID: -7830358321594707252, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -6611285846942682414, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
       propertyPath: m_Name
@@ -296,7 +296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7205150485242390193, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -340,7 +340,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   damage: 100
   range: 100
-  actualAmmo: 0
+  actualAmmo: 100000
 --- !u!4 &4060432349429993115 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 67d35ad5bed9e3b479819e0f14443093, type: 3}
@@ -892,7 +892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 55490c0cec081d54ead6cc6d7cbaecc4, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1082271958561512970, guid: 55490c0cec081d54ead6cc6d7cbaecc4, type: 3}
       propertyPath: m_Layer
@@ -1480,8 +1480,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 10
   runSpeed: 15
-  crouchSpeed: 3.9
   animator: {fileID: 0}
+  cameraController: {fileID: 0}
 --- !u!114 &5482671142433963662
 MonoBehaviour:
   m_ObjectHideFlags: 0
